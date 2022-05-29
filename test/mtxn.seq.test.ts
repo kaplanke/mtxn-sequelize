@@ -1,6 +1,7 @@
 import log4js from "log4js";
 import { FunctionContext, MultiTxnMngr, Task } from "multiple-transaction-manager";
 import { Sequelize, INTEGER, STRING, Model } from "sequelize";
+import { describe, test, beforeAll, expect, afterAll } from '@jest/globals';
 import { SeqDBContext } from "../src/index";
 
 log4js.configure({
