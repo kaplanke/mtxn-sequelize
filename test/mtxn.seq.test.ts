@@ -73,11 +73,11 @@ describe("Multiple transaction manager Sequelize workflow test...", () => {
         *************** */
 
         // Add control step
-        seqContext.addTask(txnMngr, "SELECT * FROM Students");
+        const controlTask: Task = seqContext.addTask(txnMngr, "SELECT * FROM Students");
 
-        const tasks: Task[] = await txnMngr.exec();
+        await txnMngr.exec();
 
-        expect(tasks[3].getResult().results[1]["name"]).toEqual("Kevin");
+        expect(controlTask.getResult().results[1]["name"]).toEqual("Kevin");
     });
 
 
