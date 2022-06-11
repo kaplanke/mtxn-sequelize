@@ -36,6 +36,7 @@ class SeqDBContext implements Context {
                 reject("Cannot commit. Context not initialised.");
             } else {
                 this.txn?.commit().then(_ => {
+                    this.logger.debug(this.getName() + " is committed.");
                     this.txn = undefined;
                     resolve(this)
                 }).catch((err) => {
@@ -51,6 +52,7 @@ class SeqDBContext implements Context {
                 reject("Cannot rollback. Context not initialised.");
             } else {
                 this.txn?.rollback().then(_ => {
+                    this.logger.debug(this.getName() + " is rollbacked.");
                     this.txn = undefined;
                     resolve(this)
                 }).catch((err) => {
