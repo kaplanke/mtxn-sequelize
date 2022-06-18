@@ -1,6 +1,6 @@
 {
   "name": "@multiple-transaction-manager/sequelize",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Multiple Transaction Manager Sequelize adapter",
   "main": "index.js",
   "types": "index.d.ts",
@@ -24,8 +24,8 @@
   "license": "MIT",
   "dependencies": {
     "@log4js-node/log4js-api": "1.0.2",
-    "multiple-transaction-manager": "file:../mtxn/dist/multiple-transaction-manager-1.0.1.tgz",
-    "^sequelize": "6.20.0",
+    "multiple-transaction-manager": "1.0.1",
+    "sequelize": "^6.20.0",
     "uuid": "8.3.2",
     "@types/uuid": "8.3.4"
   },
