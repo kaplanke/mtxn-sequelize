@@ -76,14 +76,14 @@ class SeqDBContext implements Context {
         return this.txn;
     }
 
-    addTask(txnMngr: MultiTxnMngr, querySql: string, params?: any | undefined): Task {
+    addTask(txnMngr: MultiTxnMngr, querySql: string, params?: unknown | undefined): Task {
         const task = new SeqDBTask(this, querySql, params, undefined);
         txnMngr.addTask(task);
         return task;
     }
 
     addFunctionTask(txnMngr: MultiTxnMngr,
-        execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<any | undefined>) | undefined): Task {
+        execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<unknown | undefined>) | undefined): Task {
         const task = new SeqDBTask(this, "", undefined, execFunc);
         txnMngr.addTask(task);
         return task;
@@ -91,16 +91,16 @@ class SeqDBContext implements Context {
 }
 
 class SeqDBTask implements Task {
-    params: any;
+    params: unknown;
     context: SeqDBContext;
     querySql: string;
-    rs: any | undefined; // [results, metadata]
-    execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<any | undefined>) | undefined;
+    rs: unknown | undefined; // [results, metadata]
+    execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<unknown | undefined>) | undefined;
 
     constructor(context: SeqDBContext,
         querySql: string,
-        params: any,
-        execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<any | undefined>) | undefined) {
+        params: unknown,
+        execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<unknown | undefined>) | undefined) {
         this.context = context;
         this.querySql = querySql;
         if (params)
@@ -123,7 +123,7 @@ class SeqDBTask implements Task {
                     rejectTask(err);
                 });
             } else {
-                let params = [];
+                let params;
                 if (this.params) {
                     if (this.params instanceof Function)
                         params = this.params();
@@ -141,11 +141,11 @@ class SeqDBTask implements Task {
         });
     }
 
-    setParams(params: any) {
+    setParams(params: unknown) {
         this.params = params;
     }
 
-    getResult(): any | undefined {
+    getResult(): unknown | undefined {
         return this.rs;
     }
 

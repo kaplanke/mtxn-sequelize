@@ -1,14 +1,13 @@
+import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import log4js from "log4js";
-import { FunctionContext, MultiTxnMngr, Task } from "multiple-transaction-manager";
-import { Sequelize, INTEGER, STRING, Model } from "sequelize";
-import { describe, test, beforeAll, expect, afterAll } from '@jest/globals';
+import { MultiTxnMngr, Task } from "multiple-transaction-manager";
+import { INTEGER, Sequelize, STRING } from "sequelize";
 import { SeqDBContext } from "../src/index";
 
 log4js.configure({
     appenders: { 'out': { type: 'stdout' } },
     categories: { default: { appenders: ['out'], level: 'debug' } }
 });
-const logger = log4js.getLogger();
 
 const sequelize = new Sequelize('sqlite::memory:', { logging: false });
 const Student = sequelize.define("Student", {
@@ -50,8 +49,8 @@ describe("Multiple transaction manager Sequelize workflow test...", () => {
 
         // Add second step
         seqContext.addFunctionTask(txnMngr,
-            (sequelize, txn, task) => {
-                return new Promise<any | undefined>((resolve, reject) => {
+            (_sequelize, txn, _task) => {
+                return new Promise<unknown | undefined>((resolve, reject) => {
                     Student.create(
                         { id: 2, name: "Kevin" },
                         { transaction: txn }
