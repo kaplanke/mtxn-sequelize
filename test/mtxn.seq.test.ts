@@ -32,23 +32,21 @@ describe("Multiple transaction manager Sequelize workflow test...", () => {
 
     test("Function task example", async () => {
 
-        // init manager
+        // init manager & context
         const txnMngr: MultiTxnMngr = new MultiTxnMngr();
-
-        const seqContext = new SeqDBContext(sequelize);
+        const seqContext = new SeqDBContext(txnMngr, sequelize);
 
         // Add first step
-        seqContext.addTask(txnMngr, "DELETE FROM Students");
+        seqContext.addTask("DELETE FROM Students");
 
         // Add second step
         seqContext.addTask(
-            txnMngr,
             "INSERT INTO Students(id, name, createdAt, updatedAt) VALUES ($id, $name, date(), date())",
             { "id": 1, "name": "Dave" }
         );
 
         // Add second step
-        seqContext.addFunctionTask(txnMngr,
+        seqContext.addFunctionTask(
             (_sequelize, txn, _task) => {
                 return new Promise<unknown | undefined>((resolve, reject) => {
                     Student.create(
@@ -65,14 +63,13 @@ describe("Multiple transaction manager Sequelize workflow test...", () => {
         // Enable this if you want to test rollback scenario...
         /* **************** 
         seqContext.addTask(
-            txnMngr,
             "INSERT INTO Students(id, name, createdAt, updatedAt) VALUES ($id, $name, date(), date())",
             { "id": 1, "name": "Bob" }
         );
         *************** */
 
         // Add control step
-        const controlTask: Task = seqContext.addTask(txnMngr, "SELECT * FROM Students");
+        const controlTask: Task = seqContext.addTask("SELECT * FROM Students");
 
         await txnMngr.exec();
 

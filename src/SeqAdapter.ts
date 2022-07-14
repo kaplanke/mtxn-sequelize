@@ -5,12 +5,14 @@ import { v1 } from "uuid";
 
 class SeqDBContext implements Context {
 
+    txnMngr: MultiTxnMngr;
     sequilize: Sequelize;
     txn: Transaction | undefined = undefined;
     contextId: string;
     logger = log4js.getLogger("MultiTxnMngr");
 
-    constructor(sequilize: Sequelize) {
+    constructor(txnMngr: MultiTxnMngr, sequilize: Sequelize) {
+        this.txnMngr = txnMngr;
         this.sequilize = sequilize;
         this.contextId = v1();
     }
@@ -76,16 +78,16 @@ class SeqDBContext implements Context {
         return this.txn;
     }
 
-    addTask(txnMngr: MultiTxnMngr, querySql: string, params?: unknown | undefined): Task {
+    addTask(querySql: string, params?: unknown | undefined): Task {
         const task = new SeqDBTask(this, querySql, params, undefined);
-        txnMngr.addTask(task);
+        this.txnMngr.addTask(task);
         return task;
     }
 
-    addFunctionTask(txnMngr: MultiTxnMngr,
+    addFunctionTask(
         execFunc: ((sequilize: Sequelize, txn: Transaction, task: Task) => Promise<unknown | undefined>) | undefined): Task {
         const task = new SeqDBTask(this, "", undefined, execFunc);
-        txnMngr.addTask(task);
+        this.txnMngr.addTask(task);
         return task;
     }
 }
@@ -145,7 +147,7 @@ class SeqDBTask implements Task {
         this.params = params;
     }
 
-    getResult(): unknown | undefined {
+    getResult() {
         return this.rs;
     }
 
